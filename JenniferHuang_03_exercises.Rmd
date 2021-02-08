@@ -266,7 +266,7 @@ Trips %>%
        y = "")
 ```
   
-### Spatial patterns
+### Spatial patterns 
 
   15. Use the latitude and longitude variables in `Stations` to make a visualization of the total number of departures from each station in the `Trips` data. Use either color or size to show the variation in number of departures. We will improve this plot next week when we learn about maps!
   

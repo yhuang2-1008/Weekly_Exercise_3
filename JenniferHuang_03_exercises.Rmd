@@ -47,7 +47,7 @@ Before starting your assignment, you need to get yourself set up on GitHub and m
 * Download the code from this document and save it in the repository folder/project on your computer.  
 * In R Studio, you should then see the .Rmd file in the upper right corner in the Git tab (along with the .Rproj file and probably .gitignore).  
 * Check all the boxes of the files in the Git tab and choose commit.  
-* In the commit window, write a commit message, something like "Initial upload" would be appropriate, and commit the files.  
+* In the commit window, write a commit message, something like "Initial upload" would be appropriate, and commit the files.   
 * Either click the green up arrow in the commit window or close the commit window and click the green up arrow in the Git tab to push your changes to GitHub.  
 * Refresh your GitHub page (online) and make sure the new documents have been pushed out.  
 * Back in R Studio, knit the .Rmd file. When you do that, you should have two (as long as you didn't make any changes to the .Rmd file, in which case you might have three) files show up in the Git tab - an .html file and an .md file. The .md file is something we haven't seen before and is here because I included `keep_md: TRUE` in the YAML heading. The .md file is a markdown (NOT R Markdown) file that is an interim step to creating the html file. They are displayed fairly nicely in GitHub, so we want to keep it and look at it there. Click the boxes next to these two files, commit changes (remember to include a commit message), and push them (green up arrow).  

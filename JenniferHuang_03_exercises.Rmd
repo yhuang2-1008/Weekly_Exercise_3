@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
 ```
 
 ```{r libraries}
@@ -38,23 +38,6 @@ data("garden_planting")
 kids <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-15/kids.csv')
 ```
 
-## Setting up on GitHub!
-
-Before starting your assignment, you need to get yourself set up on GitHub and make sure GitHub is connected to R Studio. To do that, you should read the instruction (through the "Cloning a repo" section) and watch the video [here](https://github.com/llendway/github_for_collaboration/blob/master/github_for_collaboration.md). Then, do the following (if you get stuck on a step, don't worry, I will help! You can always get started on the homework and we can figure out the GitHub piece later):
-
-* Create a repository on GitHub, giving it a nice name so you know it is for the 3rd weekly exercise assignment (follow the instructions in the document/video).  
-* Copy the repo name so you can clone it to your computer. In R Studio, go to file --> New project --> Version control --> Git and follow the instructions from the document/video.  
-* Download the code from this document and save it in the repository folder/project on your computer.  
-* In R Studio, you should then see the .Rmd file in the upper right corner in the Git tab (along with the .Rproj file and probably .gitignore).  
-* Check all the boxes of the files in the Git tab and choose commit.  
-* In the commit window, write a commit message, something like "Initial upload" would be appropriate, and commit the files.   
-* Either click the green up arrow in the commit window or close the commit window and click the green up arrow in the Git tab to push your changes to GitHub.  
-* Refresh your GitHub page (online) and make sure the new documents have been pushed out.  
-* Back in R Studio, knit the .Rmd file. When you do that, you should have two (as long as you didn't make any changes to the .Rmd file, in which case you might have three) files show up in the Git tab - an .html file and an .md file. The .md file is something we haven't seen before and is here because I included `keep_md: TRUE` in the YAML heading. The .md file is a markdown (NOT R Markdown) file that is an interim step to creating the html file. They are displayed fairly nicely in GitHub, so we want to keep it and look at it there. Click the boxes next to these two files, commit changes (remember to include a commit message), and push them (green up arrow).  
-* As you work through your homework, save and commit often, push changes occasionally (maybe after you feel finished with an exercise?), and go check to see what the .md file looks like on GitHub.  
-* If you have issues, let me know! This is new to many of you and may not be intuitive at first. But, I promise, you'll get the hang of it! 
-
-
 
 ## Warm-up exercises with garden data
 
@@ -79,6 +62,7 @@ garden_harvest %>%
   group_by(vegetable, variety) %>% 
   summarize(sum_wt = sum((weight)*0.00220462)) %>%
   left_join(garden_planting, by = c("vegetable", "variety")) 
+# how to add plot? 
 ```
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
@@ -98,8 +82,9 @@ garden_harvest %>%
   summarize(sum_wt = sum(weight*0.00220462)) %>% 
   ggplot(aes(x = sum_wt, y = ordered_variety)) +
   geom_col() +
-  labs(title = "# of harvests by tomato variety", 
-       y = "") # fix this
+  labs(title = "Smallest to largest first harvest date by tomato variety", 
+       y = "",
+       x = "Weight (lbs)") 
 ```
 
 
@@ -133,16 +118,14 @@ Two data tables are available:
 - `Trips` contains records of individual rentals
 - `Stations` gives the locations of the bike rental stations
 
-Here is the code to read in the data. We do this a little differently than usual, which is why it is included here rather than at the top of this file. To avoid repeatedly re-reading the files, start the data import chunk with `{r cache = TRUE}` rather than the usual `{r}`.
-
 ```{r cache=TRUE}
 data_site <- 
-  "https://www.macalester.edu/~dshuman1/data/112/2014-Q4-Trips-History-Data-Small.rds" 
+  "https://www.macalester.edu/~dshuman1/data/112/2014-Q4-Trips-History-Data.rds" 
+# removed -Small after -Data
 Trips <- readRDS(gzcon(url(data_site)))
 Stations<-read_csv("http://www.macalester.edu/~dshuman1/data/112/DC-Stations.csv")
 ```
 
-**NOTE:** The `Trips` data table is a random subset of 10,000 trips from the full quarterly data. Start with this small data table to develop your analysis commands. **When you have this working well, you should access the full data set of more than 600,000 events by removing `-Small` from the name of the `data_site`.**
 
 ### Temporal patterns
 
@@ -153,7 +136,7 @@ It's natural to expect that bikes are rented more at some times of day, some day
 ```{r}
 Trips %>% 
   ggplot(aes(x = sdate)) +
-  geom_density(fill = "lightblue", alpha=0.5)
+  geom_density(fill = "lightgreen", alpha=0.5)
 ```
   
   8. A density plot of the events versus time of day.  You can use `mutate()` with `lubridate`'s  `hour()` and `minute()` functions to extract the hour of the day and minute within the hour from `sdate`. Hint: A minute is 1/60 of an hour, so create a variable where 3:30 is 3.5 and 3:45 is 3.75.
@@ -165,7 +148,7 @@ Trips %>%
          time = sdate_hr + (sdate_min/60)) %>% 
   ggplot()+
   geom_density(aes(x = time), fill = "lightblue", alpha = 0.5) + 
-  labs(title = "Bike Rental Peak Time Over a Day",
+  labs(title = "Bike rental peak time over a day",
        x = "Time of day (24hr time)",
        y = "")
 ```
@@ -177,9 +160,9 @@ Trips %>%
   mutate(day = wday(sdate, label = TRUE)) %>% 
   ggplot() +
   geom_bar(aes(y = fct_rev(day))) + 
-  labs(title = "Bike Rental Peak Time Over a Week",
+  labs(title = "Bike rental peak time over a week",
        x = "Count",
-       y = "Day of the Week")
+       y = "")
 ```
 
   
@@ -190,9 +173,9 @@ Trips %>%
   mutate(time_of_day = hour(sdate) + (minute(sdate)/60),
          day = wday(sdate, label = TRUE)) %>% 
   ggplot()+
-  geom_density(aes(x = time_of_day), fill = "lightblue", alpha = 0.5) + 
+  geom_density(aes(x = time_of_day), fill = "lightpink", alpha = 0.5) + 
   facet_wrap(~ day) +
-  labs(title = "Bike Rental Peak Time Over a Day",
+  labs(title = "Bike rental peak time on each day of the week",
        x = "Time of day (24hr time)",
        y = "")
 ```
@@ -213,9 +196,10 @@ Trips %>%
   ggplot()+
   geom_density(aes(x = time_of_day, fill = client), alpha = 0.5) + 
   facet_wrap(~ day) +
-  labs(title = "Bike Rental Peak Time Over a Day",
+  labs(title = "Bike rental peak time grouped by client on each day of the week",
        x = "Time of day (24hr time)",
-       y = "")
+       y = "",
+       fill = "Client type")
 ```
 
   12. Change the previous graph by adding the argument `position = position_stack()` to `geom_density()`. In your opinion, is this better or worse in terms of telling a story? What are the advantages/disadvantages of each?
@@ -227,13 +211,15 @@ Trips %>%
   ggplot()+
   geom_density(aes(x = time_of_day, fill = client), alpha = 0.5, 
                position = position_stack()) + 
+  scale_fill_manual(values = c("#000080", "#C71585")) +
   facet_wrap(~ day) +
-  labs(title = "Bike Rental Peak Time Over a Day",
+  labs(title = "Bike rental peak time grouped by client on each day of the week",
        x = "Time of day (24hr time)",
-       y = "")
+       y = "",
+       fill = "Client type")
 ```
-  * first set of graph (11) better compare distribution casual and registered
-  * clearly compare different times but cannot compare distribution, larger proportion of casual and registered 
+  * The first set of graph from question 11 better compares the distribution between casual and registered bikers.
+  * The graphs from this question, on the other hand, clearly compare the different times that bikers rent out a bike but does not provide clear comparison of the rental distribution. It's a little misleading to have the Casual rental proportion to appear larger than that of the Registered rental proportion. 
   
   
   13. In this graph, go back to using the regular density plot (without `position = position_stack()`). Add a new variable to the dataset called `weekend` which will be "weekend" if the day is Saturday or Sunday and  "weekday" otherwise (HINT: use the `ifelse()` function and the `wday()` function from `lubridate`). Then, update the graph from the previous problem by faceting on the new `weekend` variable. 
@@ -245,10 +231,12 @@ Trips %>%
          weekend = ifelse(day_of_wk %in% c("Sun", "Sat"), "weekend", "weekday")) %>% 
   ggplot() +
   geom_density(aes(x = time_of_day, fill = client), alpha = 0.5) + 
+  scale_fill_manual(values = c("#E69F00","#008000")) +
   facet_wrap(vars(weekend)) +
   labs(title = "Bike Rental Peak Time Over a Day",
        x = "Time of day (24hr time)",
-       y = "")
+       y = "",
+       fill = "Client type")
 ```
   
   14. Change the graph from the previous problem to facet on `client` and fill with `weekday`. What information does this graph tell you that the previous didn't? Is one graph better than the other?
@@ -261,11 +249,19 @@ Trips %>%
   ggplot() +
   geom_density(aes(x = time_of_day, fill = "weekday"), alpha = 0.5) + 
   facet_wrap(vars(client)) +
+  scale_fill_manual(values = c("lightyellow")) +
   labs(title = "Bike Rental Peak Time Over a Day",
        x = "Time of day (24hr time)",
-       y = "")
+       y = "",
+       fill = "")+ 
+  theme(legend.position = "none")
 ```
   
+  * This graph clearly compares peak rental time between casual and registered bikers on weekdays only. Rather than having the two graphs laying on top of each other, this graph gives a clear view of the two different distributions. 
+  * However, it is also important to look at the distribution for casual and registered bikers on weekends. We don't know for sure if casual bikers really rent more often on weekends compared to registered bikers. 
+  
+
+
 ### Spatial patterns 
 
   15. Use the latitude and longitude variables in `Stations` to make a visualization of the total number of departures from each station in the `Trips` data. Use either color or size to show the variation in number of departures. We will improve this plot next week when we learn about maps!
@@ -276,7 +272,11 @@ Trips %>%
   group_by(lat, long) %>% 
   summarize(n = n()) %>% 
   ggplot(aes(x = lat, y = long, color = n)) + 
-  geom_point()
+  geom_point()+
+  labs(title = "Total number of departures from bike rental stations in Washington DC",
+       x = "Latitudinal coordinates of a station",
+       y = "Longitudinal coordinates of a station",
+       col = "Number of departures")
 ```
   
   16. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? (Again, we'll improve this next week when we learn about maps).
@@ -287,8 +287,16 @@ Trips %>%
   group_by(lat, long) %>% 
   summarize(n = n(), probability = mean(client == "Casual")) %>% 
   ggplot(aes(x = lat, y = long, size = probability, color = n)) + 
-  geom_point()
+  geom_point() + 
+  labs(title = "Percentage of departures from bike rental stations in Washington DC",
+       x = "Latitudinal coordinates of a station",
+       y = "Longitudinal coordinates of a station",
+       col = "Number of departures",
+       size = "Percentage of departures")
 ```
+  
+  * Both highest percentage and total number of departures occur in the center of the city. This is natural because it is the busiest part of the city where people congregate. 
+  
   
 ### Spatiotemporal patterns
 
@@ -299,11 +307,10 @@ first_ten <- Trips %>%
   mutate(date_format = as_date(sdate)) %>% 
   group_by(sstation, date_format) %>% 
   count() %>% 
-  ungroup() %>% 
   arrange(desc(n)) %>% 
   head(n=10)
 first_ten
-```
+``` 
   
   18. Use a join operation to make a table with only those trips whose departures match those top ten station-date combinations from the previous part.
   
@@ -321,15 +328,18 @@ Trips %>%
 Trips %>% 
   mutate(date_format = as_date(sdate),
          day_of_wk = wday(sdate, label = TRUE)) %>% 
-  inner_join(first_ten, by=c("sstation", "date_format")) %>% 
+  semi_join(first_ten, by=c("sstation", "date_format")) %>% 
   group_by(client, day_of_wk) %>% 
-  summarize(prop_trips_ByDay = mean(n))
-# proportion is calculated wrong
-# need a column for each client type
+  count() %>% 
+  group_by(client) %>% 
+  mutate(sum_trips = sum(n),
+    PropTrips_ByDay = n/sum_trips) %>% 
+  pivot_wider(names_from = "client",
+              values_from = "PropTrips_ByDay") %>% 
+  select("day_of_wk", "n", "Casual", "Registered")
 ```
 
 
-**DID YOU REMEMBER TO GO BACK AND CHANGE THIS SET OF EXERCISES TO THE LARGER DATASET? IF NOT, DO THAT NOW.**
 
 ## GitHub link
 
@@ -337,5 +347,3 @@ Trips %>%
 
 [Link to Jennifer's GitHub Page](https://github.com/yhuang2-1008/Weekly_Exercise_3)
 
-
-**DID YOU REMEMBER TO UNCOMMENT THE OPTIONS AT THE TOP?**

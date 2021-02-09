@@ -62,6 +62,8 @@ garden_harvest %>%
   </script>
 </div>
 
+$~$
+
   2. Summarize the `garden_harvest` data to find the total harvest in pound for each vegetable variety and then try adding the plot from the `garden_planting` table. This will not turn out perfectly. What is the problem? How might you fix it?
 
 
@@ -78,9 +80,12 @@ garden_harvest %>%
   </script>
 </div>
 
-```r
-# how to add plot? 
-```
+  * Beans were harvested from two different plots but the same amount of harvest in grams was recorded from both plots. This creates a problem of over-recording and doubling the harvest when it isn't actually happening. This happens for a lot of other vegetable variety as well. 
+  * To attempt correcting this issue, we can filter or mutate the data to choose just one plot and one harvest from each vegetable variety. 
+  
+
+$~$
+
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
 
@@ -88,6 +93,7 @@ garden_harvest %>%
 * Then comparing the same items from Whole Foods and your garden, we can use the example of kale and strawberries.
 * Kale is sold at Whole Foods for $1.99 for 170g and baby spinach sold for $3.49 for 30g. We know that it costs you $3 to buy kale seeds and $3.22 to buy spinach seeds. From there, we can calculate how long it takes and how much resource you must put in to grow the same amount of vegetables. 
 
+$~$
 
   4. Subset the data to tomatoes. Reorder the tomato varieties from smallest to largest first harvest date. Create a barplot of total harvest in pounds for each variety, in the new order.
 
@@ -108,6 +114,8 @@ garden_harvest %>%
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 
+$~$
+
   5. In the `garden_harvest` data, create two new variables: one that makes the varieties lowercase and another that finds the length of the variety name. Arrange the data by vegetable and length of variety name (smallest to largest), with one row for each vegetable variety. HINT: use `str_to_lower()`, `str_length()`, and `distinct()`.
   
 
@@ -127,6 +135,8 @@ garden_harvest %>%
 </div>
 
 
+$~$
+
   6. In the `garden_harvest` data, find all distinct vegetable varieties that have "er" or "ar" in their name. HINT: `str_detect()` with an "or" statement (use the | for "or") and `distinct()`.
 
 
@@ -143,6 +153,8 @@ garden_harvest %>%
   </script>
 </div>
 
+
+$~$
 
 ## Bicycle-Use Patterns
 
@@ -172,10 +184,16 @@ It's natural to expect that bikes are rented more at some times of day, some day
 ```r
 Trips %>% 
   ggplot(aes(x = sdate)) +
-  geom_density(fill = "lightgreen", alpha=0.5)
+  geom_density(fill = "lightgreen", alpha=0.5) + 
+  labs(title = "",
+       x = "Month",
+       y = "") + 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+  
+  $~$
   
   8. A density plot of the events versus time of day.  You can use `mutate()` with `lubridate`'s  `hour()` and `minute()` functions to extract the hour of the day and minute within the hour from `sdate`. Hint: A minute is 1/60 of an hour, so create a variable where 3:30 is 3.5 and 3:45 is 3.75.
   
@@ -189,10 +207,13 @@ Trips %>%
   geom_density(aes(x = time), fill = "lightblue", alpha = 0.5) + 
   labs(title = "Bike rental peak time over a day",
        x = "Time of day (24hr time)",
-       y = "")
+       y = "") + 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+  
+  $~$
   
   9. A bar graph of the events versus day of the week. Put day on the y-axis.
   
@@ -204,11 +225,12 @@ Trips %>%
   geom_bar(aes(y = fct_rev(day))) + 
   labs(title = "Bike rental peak time over a week",
        x = "Count",
-       y = "")
+       y = "") 
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
+  $~$
   
   10. Facet your graph from exercise 8. by day of the week. Is there a pattern?
   
@@ -222,7 +244,8 @@ Trips %>%
   facet_wrap(~ day) +
   labs(title = "Bike rental peak time on each day of the week",
        x = "Time of day (24hr time)",
-       y = "")
+       y = "") + 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
@@ -230,6 +253,8 @@ Trips %>%
 * There is a pattern for decreased rental during the weekdays from around 10am to 3pm. This is likely because it's working hours and people are not commuting to and from work.
 * There is also a pattern for the weekends where rentals start around 9am and ends around 8pm. People have more leisure time to be out and about during the weekends. 
 
+
+$~$
 
   
 The variable `client` describes whether the renter is a regular user (level `Registered`) or has not joined the bike-rental organization (`Causal`). The next set of exercises investigate whether these two different categories of users show different rental behavior and how `client` interacts with the patterns you found in the previous exercises. 
@@ -247,10 +272,14 @@ Trips %>%
   labs(title = "Bike rental peak time grouped by client on each day of the week",
        x = "Time of day (24hr time)",
        y = "",
-       fill = "Client type")
+       fill = "Client type") + 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+
+$~$
 
   12. Change the previous graph by adding the argument `position = position_stack()` to `geom_density()`. In your opinion, is this better or worse in terms of telling a story? What are the advantages/disadvantages of each?
   
@@ -267,12 +296,17 @@ Trips %>%
   labs(title = "Bike rental peak time grouped by client on each day of the week",
        x = "Time of day (24hr time)",
        y = "",
-       fill = "Client type")
+       fill = "Client type")+ 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
-  * The first set of graph from question 11 better compares the distribution between casual and registered bikers.
-  * The graphs from this question, on the other hand, clearly compare the different times that bikers rent out a bike but does not provide clear comparison of the rental distribution. It's a little misleading to have the Casual rental proportion to appear larger than that of the Registered rental proportion. 
+
+* The first set of graph from question 11 better compares the distribution between casual and registered bikers.
+* The graphs from this question, on the other hand, clearly compare the different times that bikers rent out a bike but does not provide clear comparison of the rental distribution. It's a little misleading to have the Casual rental proportion to appear larger than that of the Registered rental proportion. 
+  
+  
+  $~$
   
   
   13. In this graph, go back to using the regular density plot (without `position = position_stack()`). Add a new variable to the dataset called `weekend` which will be "weekend" if the day is Saturday or Sunday and  "weekday" otherwise (HINT: use the `ifelse()` function and the `wday()` function from `lubridate`). Then, update the graph from the previous problem by faceting on the new `weekend` variable. 
@@ -290,10 +324,13 @@ Trips %>%
   labs(title = "Bike Rental Peak Time Over a Day",
        x = "Time of day (24hr time)",
        y = "",
-       fill = "Client type")
+       fill = "Client type")+ 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+  
+  $~$
   
   14. Change the graph from the previous problem to facet on `client` and fill with `weekday`. What information does this graph tell you that the previous didn't? Is one graph better than the other?
   
@@ -311,7 +348,8 @@ Trips %>%
        x = "Time of day (24hr time)",
        y = "",
        fill = "")+ 
-  theme(legend.position = "none")
+  theme(legend.position = "none")+ 
+  theme(axis.text.y = element_blank())
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
@@ -319,6 +357,8 @@ Trips %>%
   * This graph clearly compares peak rental time between casual and registered bikers on weekdays only. Rather than having the two graphs laying on top of each other, this graph gives a clear view of the two different distributions. 
   * However, it is also important to look at the distribution for casual and registered bikers on weekends. We don't know for sure if casual bikers really rent more often on weekends compared to registered bikers. 
   
+
+$~$
 
 
 ### Spatial patterns 
@@ -340,6 +380,9 @@ Trips %>%
 ```
 
 ![](JenniferHuang_03_exercises_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+  
+  $~$
+  
   
   16. Only 14.4% of the trips in our data are carried out by casual users. Create a plot that shows which area(s) have stations with a much higher percentage of departures by casual users. What patterns do you notice? (Again, we'll improve this next week when we learn about maps).
   
@@ -363,6 +406,8 @@ Trips %>%
   * Both highest percentage and total number of departures occur in the center of the city. This is natural because it is the busiest part of the city where people congregate. 
   
   
+  $~$
+  
 ### Spatiotemporal patterns
 
   17. Make a table with the ten station-date combinations (e.g., 14th & V St., 2014-10-14) with the highest number of departures, sorted from most departures to fewest. Save this to a new dataset and print out the dataset. Hint: `as_date(sdate)` converts `sdate` from date-time format to date format. 
@@ -384,6 +429,8 @@ first_ten
   </script>
 </div>
   
+  $~$
+  
   18. Use a join operation to make a table with only those trips whose departures match those top ten station-date combinations from the previous part.
   
 
@@ -403,6 +450,8 @@ Trips %>%
 # inner_join (only keeps observations that match the sstation and date_format variables)
 # semi_join (only include data from Trips data set, won't have column n)
 ```
+  
+  $~$
   
   19. Build on the code from the previous problem (ie. copy that code below and then %>% into the next step.) and group the trips by client type and day of the week (use the name, not the number). Find the proportion of trips by day within each client type (ie. the proportions for all 7 days within each client type add up to 1). Display your results so day of week is a column and there is a column for each client type. Interpret your results.
 
@@ -429,10 +478,10 @@ Trips %>%
 </div>
 
 
-
 ## GitHub link
 
   20. Below, provide a link to your GitHub page with this set of Weekly Exercises. Specifically, if the name of the file is 03_exercises.Rmd, provide a link to the 03_exercises.md file, which is the one that will be most readable on GitHub.
 
 [Link to Jennifer's GitHub Page](https://github.com/yhuang2-1008/Weekly_Exercise_3)
 
+$~$
